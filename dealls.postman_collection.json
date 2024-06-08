@@ -1,0 +1,3892 @@
+{
+	"info": {
+		"_postman_id": "3e838ae5-45e3-49e6-b2ce-0a3652cc495d",
+		"name": "dealls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14759363"
+	},
+	"item": [
+		{
+			"name": "[No Test] Run With iteration to bulk register user",
+			"item": [
+				{
+					"name": "Bulk Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var currentGender = pm.environment.get(\"gender\")\r",
+									"if (currentGender == 1) {\r",
+									"    pm.environment.set(\"gender\", 2)\r",
+									"} else {\r",
+									"    pm.environment.set(\"gender\", 1)\r",
+									"}\r",
+									"\r",
+									"var age = Math.floor(Math.random() * (50 - 20) + 20)\r",
+									"pm.environment.set(\"age\", age);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"bulkUser{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"item": [
+				{
+					"name": "Register with invalid username",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Username\");\r",
+									"    pm.expect(responseJSON.validation_error.Username).contains(\"ascii\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}國的{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}   ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with username length more than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Username\");\r",
+									"    pm.expect(responseJSON.validation_error.Username).contains(\"max\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with username length less than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Username\");\r",
+									"    pm.expect(responseJSON.validation_error.Username).contains(\"min\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"12\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with no username",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Username\");\r",
+									"    pm.expect(responseJSON.validation_error.Username).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with no password",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Password\");\r",
+									"    pm.expect(responseJSON.validation_error.Password).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with password length less than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Password\");\r",
+									"    pm.expect(responseJSON.validation_error.Password).contains(\"min\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"1234\",\r\n    \"confirm_password\": \"1234\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with password length more than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Password\");\r",
+									"    pm.expect(responseJSON.validation_error.Password).contains(\"max\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"123456789123456789123456789123456789123456789123456789123567891234568791235467891234568791325689713265492354864153\",\r\n    \"confirm_password\": \"123456789123456789123456789123456789123456789123456789123567891234568791235467891234568791325689713265492354864153\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with no confirmerd password",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"   // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"ConfirmPassword\");\r",
+									"    pm.expect(responseJSON.validation_error.ConfirmPassword).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with diff confirmerd password",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"   // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"ConfirmPassword\");\r",
+									"    pm.expect(responseJSON.validation_error.ConfirmPassword).contains(\"eqfield\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}_diff\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with fullname length less than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"   // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Fullname\");\r",
+									"    pm.expect(responseJSON.validation_error.Fullname).contains(\"min\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"a\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with fullname length more than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Fullname\");\r",
+									"    pm.expect(responseJSON.validation_error.Fullname).contains(\"max\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"abcdesfghijklmnopqrstufwxyzabcdesfghijklmnopqrstufwxyzabcdesfghijklmnopqrstufwxyzabcdesfghijklmnopqrstufwxyzabcdesfghijklmnopqrstufwxyzstufwxyzabcdesfghijklmnopqrstufwxyzabcdesfghijklmnopqrstufwxyz\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with no fullname",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"   // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Fullname\");\r",
+									"    pm.expect(responseJSON.validation_error.Fullname).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with no age",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Age\");\r",
+									"    pm.expect(responseJSON.validation_error.Age).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with  age less than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Age\");\r",
+									"    pm.expect(responseJSON.validation_error.Age).contains(\"min\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"gender\": {{gender}},\r\n    \"age\": 15\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with  age more than limit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"   // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Age\");\r",
+									"    pm.expect(responseJSON.validation_error.Age).contains(\"max\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"gender\": {{gender}},\r\n    \"age\":  61\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with no gender",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"   // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Gender\");\r",
+									"    pm.expect(responseJSON.validation_error.Gender).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with invalid Gender",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Gender\");\r",
+									"    pm.expect(responseJSON.validation_error.Gender).contains(\"oneof\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user}}{{$timestamp}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with valid input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"fullname\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"access_token\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"refresh_token\");\r",
+									"\r",
+									"    pm.expect(responseJSON.data.id).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.fullname).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.access_token).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.refresh_token).to.be.an(\"string\");\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"existing_username\",pm.environment.get(\"new_user_username\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+									"var g = pm.environment.get(\"gender\")\r",
+									"if (g == 0) {\r",
+									"    pm.environment.set(\"gender\", 1)\r",
+									"} else {\r",
+									"    pm.environment.set(\"gender\", 0)\r",
+									"}\r",
+									"pm.environment.set(\"new_user_username\", username)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register with existing username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 422 status code', () => {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"username registered\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{existing_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "Register new user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var data = responseJSON.data;\r",
+											"pm.environment.set(\"new_user_id\", data.id)\r",
+											"pm.environment.set(\"new_user_fullname\", data.fullname)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login with valid payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"pm.test('should response.data with correct property and values', () => {\r",
+									"    const responseJSON = pm.response.json();\r",
+									"    const data = responseJSON.data;\r",
+									"        \r",
+									"    var userId = pm.environment.get(\"new_user_id\")\r",
+									"    var userFullname = pm.environment.get(\"new_user_fullname\")\r",
+									"\r",
+									"    pm.expect(data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"fullname\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"is_premium\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"refresh_token\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"access_token\");\r",
+									"\r",
+									"    pm.expect(data.id).to.be.an(\"string\");\r",
+									"    pm.expect(data.access_token).to.be.an(\"string\");\r",
+									"    pm.expect(data.refresh_token).to.be.an(\"string\");\r",
+									"    pm.expect(data.is_premium).to.be.an(\"boolean\");\r",
+									"    pm.expect(data.id).to.equal(userId);\r",
+									"    pm.expect(data.fullname).to.equal(userFullname);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login with unmatch username and password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"invalid credentials\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}_unmatch\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login with no password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Password\");\r",
+									"    pm.expect(responseJSON.validation_error.Password).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{new_user_username}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login with no username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Username\");\r",
+									"    pm.expect(responseJSON.validation_error.Username).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Dating Profile",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "Register new user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"token\", responseJSON.data.access_token)\r",
+											"pm.environment.set(\"new_user_id\", responseJSON.data.id)\r",
+											"pm.environment.set(\"new_user_fullname\", responseJSON.data.fullname)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"pm.test('should response.data with correct property and values', () => {\r",
+									"    const responseJSON = pm.response.json();\r",
+									"    const data = responseJSON.data;\r",
+									"\r",
+									"    pm.expect(data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"fullname\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"age\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"gender\");\r",
+									"\r",
+									"    pm.expect(data.id).to.be.an(\"string\");\r",
+									"    pm.expect(data.fullname).to.be.an(\"string\");\r",
+									"    pm.expect(data.age).to.be.an(\"number\");\r",
+									"    pm.expect(data.gender).to.be.an(\"number\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/datting-profile",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"datting-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user profile with no jwt token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"Unauthorized\");\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"sadan\",\r\n    \"password\": \"111111\",\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/datting-profile",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"datting-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user profile with invalid jwt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "invalid.jwt.token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/datting-profile",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"datting-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user profile with expire  jwt token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{old_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/datting-profile",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"datting-profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upgrade User",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "Register user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											" const responseJSON = pm.response.json();\r",
+											"pm.environment.set(\"new_user_object\", responseJSON.data);\r",
+											"pm.environment.set(\"token\", responseJSON.data.access_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const moment = require('moment');\r",
+											"\r",
+											"var username = pm.environment.get(\"new_user\")+ moment().format(\"YYMMDDhhmmss\")\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "updagrade account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/upgrade",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"upgrade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updagra premium account already",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 422 status code', () => {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"user already premium\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/upgrade",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"upgrade"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Swap Dating Profile",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "Register user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											" const responseJSON = pm.response.json();\r",
+											"pm.environment.set(\"user_id\", responseJSON.data.id);\r",
+											"pm.environment.set(\"token\", responseJSON.data.access_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 4",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 5",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 6",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 7",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 8",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 9",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 10",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+											"\r",
+											"targetUserIds.push(responseJSON.data.id);\r",
+											"\r",
+											"pm.environment.set(\"target_swipe_user_ids\", JSON.stringify(targetUserIds))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user premium",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											" const responseJSON = pm.response.json();\r",
+											"pm.environment.set(\"temp_user_id_premium\", responseJSON.data.id);\r",
+											"pm.environment.set(\"token_user_premium\", responseJSON.data.access_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user premium",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											" const responseJSON = pm.response.json();\r",
+											"pm.environment.set(\"temp_user_id_premium_2\", responseJSON.data.id);\r",
+											"pm.environment.set(\"token_user_premium\", responseJSON.data.access_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.environment.get(\"new_user\")+Date.now()\r",
+											"var g = pm.environment.get(\"gender\")\r",
+											"if (g == 0) {\r",
+											"    pm.environment.set(\"gender\", 1)\r",
+											"} else {\r",
+											"    pm.environment.set(\"gender\", 0)\r",
+											"}\r",
+											"pm.environment.set(\"new_user_username\", username)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{new_user_username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"fullname\": \"{{$randomFullName}}\",\r\n    \"age\": {{age}},\r\n    \"gender\": {{gender}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "upgrade user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token_user_premium}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/user/upgrade",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"user",
+										"upgrade"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "swap user profile with no jwt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"Unauthorized\");\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 22,\r\n    \"type\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile with invalid jwt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "invalid.token.jwt",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 22,\r\n    \"type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile expire jwt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{old_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 22,\r\n    \"type\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile without user_id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"SwippedUseID\");\r",
+									"    pm.expect(responseJSON.validation_error.SwippedUseID).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile with unexist user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 422 status code', () => {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"invalid profile\");\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\":\"99999999999999999\",\r\n    \"type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile without type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Type\");\r",
+									"    pm.expect(responseJSON.validation_error.Type).contains(\"required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\":\"{{temp_user_id_premium}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile with invalid type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"validation error\");\r",
+									"    \r",
+									"    // check validation_errors\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('validation_error');\r",
+									"    pm.expect(responseJSON.validation_error).to.be.an(\"object\")\r",
+									"    pm.expect(responseJSON.validation_error).not.null;\r",
+									"    pm.expect(responseJSON.validation_error).to.haveOwnProperty(\"Type\");\r",
+									"    pm.expect(responseJSON.validation_error.Type).contains(\"oneof\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\":\"{{user_id}}\",\r\n    \"type\": 9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile with valid payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\":\"{{temp_user_id_premium}}\",\r\n    \"type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile has been swap today",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 422 status code', () => {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"profile already swipe\");\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"{{temp_user_id_premium}}\",\r\n    \"type\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile more than 10 time for freemium user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 422 status code', () => {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"swipe exceeds daily limit\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var protocol = pm.environment.get(\"protocol\");\r",
+									"var host = pm.environment.get(\"host\");\r",
+									"var port = pm.environment.get(\"port\");\r",
+									"\r",
+									"var token = pm.environment.get(\"token\");\r",
+									"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+									"var i = 1;\r",
+									"targetUserIds.forEach((id, i) => {\r",
+									"    setTimeout(function() {\r",
+									"        var req = {\r",
+									"        url: `${protocol}://${host}:${port}/user/swipe`,\r",
+									"        method: \"POST\",\r",
+									"        header: {\r",
+									"            \"Content-Type\": \"application/json\",\r",
+									"            \"Authorization\": `Bearer ${token}`\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: \"raw\",\r",
+									"            raw: JSON.stringify({\r",
+									"                \"user_id\": id,\r",
+									"                \"type\": 1\r",
+									"            })\r",
+									"        }\r",
+									"    }\r",
+									"    pm.sendRequest(req);\r",
+									"    }, i*300);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"{{temp_user_id_premium_2}}\",\r\n    \"type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swap user profile more than 10 time for premium user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var protocol = pm.environment.get(\"protocol\");\r",
+									"var host = pm.environment.get(\"host\");\r",
+									"var port = pm.environment.get(\"port\");\r",
+									"\r",
+									"var token = pm.environment.get(\"token_user_premium\");\r",
+									"var targetUserIds = JSON.parse(pm.environment.get(\"target_swipe_user_ids\")); // Parse the string as JSON array\r",
+									"var i = 1;\r",
+									"targetUserIds.forEach((id, i) => {\r",
+									"    setTimeout(function() {\r",
+									"        var req = {\r",
+									"        url: `${protocol}://${host}:${port}/user/swipe`,\r",
+									"        method: \"POST\",\r",
+									"        header: {\r",
+									"            \"Content-Type\": \"application/json\",\r",
+									"            \"Authorization\": `Bearer ${token}`\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: \"raw\",\r",
+									"            raw: JSON.stringify({\r",
+									"                \"user_id\": id,\r",
+									"                \"type\": 1\r",
+									"            })\r",
+									"        }\r",
+									"    }\r",
+									"    pm.sendRequest(req);\r",
+									"    }, i*300);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_user_premium}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"{{user_id}}\",\r\n    \"type\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/user/swipe",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"swipe"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
