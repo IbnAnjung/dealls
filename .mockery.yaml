@@ -1,0 +1,11 @@
+with-expecter: true
+packages:
+  github.com/IbnAnjung/dealls:
+    config:
+      recursive: true
+      all: True
+      filename: "mock_{{ .InterfaceName | snakecase }}.go"
+      dir: "./mock/{{ replace (replace (replace .PackagePath `github.com` `` 1) `IbnAnjung` `` 1) `dealls` `` 1}}"
+      mockname: "Mock{{.InterfaceName}}"
+      outpkg: "{{.PackageName}}"
+ 

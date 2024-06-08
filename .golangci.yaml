@@ -1,0 +1,7 @@
+issues:
+  exclude-dirs:
+    - mock
+  exclude-rules:
+    - path: pkg/http/
+      linters:
+        - errcheck
